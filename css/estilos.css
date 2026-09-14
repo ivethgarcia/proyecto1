@@ -75,3 +75,9 @@ header span, header p, .header span, .header p {
 .credentials-box, .demo-credentials, #demo-credentials, .alert-info, .bg-blue-50 {
   display: none !important;
 }
+
+
+/* --- Ocultar tarjeta de credenciales de prueba --- */
+.bg-amber-50, .bg-blue-50, .bg-yellow-50, [class*="border-amber"], [class*="border-yellow"] {
+  display: none !important;
+}
