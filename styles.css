@@ -694,3 +694,73 @@ footer {
 }
 
 
+
+
+/* --- Paleta Rosa Palo --- */
+:root {
+  --primary: #F8C8DC;
+  --primary-accent: #D4A3A8;
+}
+
+header, .navbar, .bg-primary, button.btn-primary {
+  background-color: #F8C8DC !important;
+  color: #2D2D2D !important;
+}
+
+a:hover, .text-primary {
+  color: #D4A3A8 !important;
+}
+
+
+/* --- Ajuste de Banner: Fondo Azul Cielo y Texto Negro --- */
+header, .header, .navbar, .banner, .hero, [class*="bg-gradient"], [class*="bg-blue"] {
+  background: #87CEEB !important; /* Azul Cielo */
+  background-color: #87CEEB !important;
+  color: #000000 !important;
+}
+
+header h1, .header h1, .navbar h1, .banner h1, .hero h1,
+header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
+  color: #000000 !important; /* Texto del título en Negro */
+  font-weight: bold !important;
+}
+
+header span, header p, .header span, .header p {
+  color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
+}
+
+
+/* --- Ajuste de Banner: Fondo Azul Cielo y Texto Negro --- */
+header, .header, .navbar, .banner, .hero, [class*="bg-gradient"], [class*="bg-blue"] {
+  background: #87CEEB !important; /* Azul Cielo */
+  background-color: #87CEEB !important;
+  color: #000000 !important;
+}
+
+header h1, .header h1, .navbar h1, .banner h1, .hero h1,
+header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
+  color: #000000 !important; /* Texto del título en Negro */
+  font-weight: bold !important;
+}
+
+header span, header p, .header span, .header p {
+  color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
+}
+
+
+/* --- Ajuste de Banner: Fondo Azul Cielo y Texto Negro --- */
+header, .header, .navbar, .banner, .hero, [class*="bg-gradient"], [class*="bg-blue"] {
+  background: #87CEEB !important; /* Azul Cielo */
+  background-color: #87CEEB !important;
+  color: #000000 !important;
+}
+
+header h1, .header h1, .navbar h1, .banner h1, .hero h1,
+header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
+  color: #000000 !important; /* Texto del título en Negro */
+  font-weight: bold !important;
+}
+
+header span, header p, .header span, .header p {
+  color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
+}
