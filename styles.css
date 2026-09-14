@@ -764,3 +764,9 @@ header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
 header span, header p, .header span, .header p {
   color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
 }
+
+
+/* --- Ocultar tarjeta/bloque de credenciales en Login --- */
+.credentials-box, .demo-credentials, #demo-credentials, .alert-info, .bg-blue-50 {
+  display: none !important;
+}
