@@ -114,3 +114,7 @@ INSERT INTO jugadores (id, equipo_id, nombre, numero, posicion, foto_url) VALUES
 (13, 7, 'Hugo Duro', 9, 'Delantero', '⚽'),
 (14, 8, 'Luis Suárez', 9, 'Delantero', '⚽')
 ON CONFLICT (id) DO NOTHING;
+
+-- Sincronizar las secuencias después de insertar IDs iniciales explícitos
+SELECT setval(pg_get_serial_sequence('equipos', 'id'), COALESCE((SELECT MAX(id) FROM equipos), 1), true);
+SELECT setval(pg_get_serial_sequence('jugadores', 'id'), COALESCE((SELECT MAX(id) FROM jugadores), 1), true);

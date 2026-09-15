@@ -7,32 +7,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  /* Paleta de colores principal */
-  --primary: #0f172a;           /* Azul noche profundo */
-  --primary-light: #1e293b;     /* Azul pizarra */
-  --accent-blue: #2563eb;       /* Azul deportivo */
-  --accent-gold: #f59e0b;       /* Dorado trofeo */
-  
+  /* Paleta principal: azul noche + verde de cancha */
+  --primary: #071a2a;           /* Azul noche profundo */
+  --primary-light: #123a52;     /* Azul medianoche */
+  --accent-blue: #0f5ea8;      /* Azul deportivo */
+  --accent-blue-soft: #7dd3fc; /* Azul claro */
+  --accent-green: #2bb673;     /* Verde cancha */
+  --accent-green-dark: #0d6b46; /* Verde intenso */
+  --accent-gold: #d7f9a8;      /* Toque claro de hierba */
+
   /* Zonas de clasificación y descenso */
-  --zone-champions-bg: rgba(16, 185, 129, 0.08);
-  --zone-champions-border: #10b981; /* Verde esmeralda */
-  --zone-champions-badge: #059669;
-  
+  --zone-champions-bg: rgba(43, 182, 115, 0.10);
+  --zone-champions-border: #22c55e;
+  --zone-champions-badge: #15803d;
+
   --zone-relegation-bg: rgba(239, 68, 68, 0.08);
-  --zone-relegation-border: #ef4444; /* Rojo carmesí */
+  --zone-relegation-border: #ef4444;
   --zone-relegation-badge: #dc2626;
 
   /* Colores de interfaz */
-  --bg-page: #f8fafc;
-  --bg-card: #ffffff;
+  --bg-page: linear-gradient(135deg, #071a2a 0%, #0d2237 28%, #123d52 52%, #1c6d4c 100%);
+  --bg-card: rgba(255, 255, 255, 0.96);
   --text-main: #0f172a;
-  --text-muted: #64748b;
-  --border-light: #e2e8f0;
-  --hover-row: #f1f5f9;
+  --text-muted: #52677f;
+  --border-light: rgba(148, 163, 184, 0.28);
+  --hover-row: rgba(173, 216, 230, 0.12);
   --radius-lg: 16px;
   --radius-md: 10px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+  --shadow-sm: 0 1px 3px rgba(2, 6, 23, 0.08);
+  --shadow-md: 0 18px 35px -18px rgba(7, 26, 42, 0.45), 0 10px 20px -14px rgba(11, 92, 70, 0.35);
 }
 
 * {
@@ -43,7 +46,7 @@
 
 body {
   font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-page);
+  background: var(--bg-page);
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
@@ -696,74 +699,49 @@ footer {
 
 
 
-/* --- Paleta Rosa Palo --- */
+/* --- Paleta general actualizada: azul noche + verde cancha --- */
 :root {
-  --primary: #F8C8DC;
-  --primary-accent: #D4A3A8;
+  --primary: #071a2a;
+  --primary-light: #123a52;
+  --accent-blue: #0f5ea8;
+  --accent-green: #2bb673;
+  --accent-green-dark: #0d6b46;
 }
 
-header, .navbar, .bg-primary, button.btn-primary {
-  background-color: #F8C8DC !important;
-  color: #2D2D2D !important;
+body {
+  background: linear-gradient(135deg, #071a2a 0%, #0d2237 28%, #123d52 52%, #1c6d4c 100%);
 }
 
-a:hover, .text-primary {
-  color: #D4A3A8 !important;
+.navbar-custom,
+.league-header,
+.btn-primary,
+.badge-season,
+.standings-card-header,
+.table-standings thead {
+  background: linear-gradient(135deg, #071a2a 0%, #123a52 50%, #1d6d4d 100%);
 }
 
-
-/* --- Ajuste de Banner: Fondo Azul Cielo y Texto Negro --- */
-header, .header, .navbar, .banner, .hero, [class*="bg-gradient"], [class*="bg-blue"] {
-  background: #87CEEB !important; /* Azul Cielo */
-  background-color: #87CEEB !important;
-  color: #000000 !important;
+.btn-primary {
+  border-color: var(--accent-green);
+  box-shadow: 0 8px 18px rgba(43, 182, 115, 0.28);
 }
 
-header h1, .header h1, .navbar h1, .banner h1, .hero h1,
-header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
-  color: #000000 !important; /* Texto del título en Negro */
-  font-weight: bold !important;
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0d6b46 0%, #2bb673 100%);
+  border-color: var(--accent-green);
 }
 
-header span, header p, .header span, .header p {
-  color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
+.card-custom,
+.standings-card,
+.legend-card,
+.pichichi-hero-card,
+.stat-pill-card,
+.card {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(148, 163, 184, 0.28);
+  box-shadow: 0 18px 35px -18px rgba(7, 26, 42, 0.45);
 }
 
-
-/* --- Ajuste de Banner: Fondo Azul Cielo y Texto Negro --- */
-header, .header, .navbar, .banner, .hero, [class*="bg-gradient"], [class*="bg-blue"] {
-  background: #87CEEB !important; /* Azul Cielo */
-  background-color: #87CEEB !important;
-  color: #000000 !important;
-}
-
-header h1, .header h1, .navbar h1, .banner h1, .hero h1,
-header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
-  color: #000000 !important; /* Texto del título en Negro */
-  font-weight: bold !important;
-}
-
-header span, header p, .header span, .header p {
-  color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
-}
-
-
-/* --- Ajuste de Banner: Fondo Azul Cielo y Texto Negro --- */
-header, .header, .navbar, .banner, .hero, [class*="bg-gradient"], [class*="bg-blue"] {
-  background: #87CEEB !important; /* Azul Cielo */
-  background-color: #87CEEB !important;
-  color: #000000 !important;
-}
-
-header h1, .header h1, .navbar h1, .banner h1, .hero h1,
-header h2, .header h2, .navbar h2, .banner h2, .hero h2 {
-  color: #000000 !important; /* Texto del título en Negro */
-  font-weight: bold !important;
-}
-
-header span, header p, .header span, .header p {
-  color: #1A1A1A !important; /* Subtítulos en gris muy oscuro para excelente contraste */
-}
 
 
 /* --- Ocultar tarjeta/bloque de credenciales en Login --- */

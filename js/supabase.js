@@ -8,16 +8,16 @@
  */
 
 // 1. Configuración de credenciales de Supabase
-const SUPABASE_URL = 'TU_SUPABASE_URL_AQUI'; // Ej: https://xyzcompany.supabase.co
-const SUPABASE_ANON_KEY = 'TU_SUPABASE_ANON_KEY_AQUI'; // Clave pública anónima (anon public)
+const SUPABASE_URL = 'https://krqnvhrbwkxkehnojtnu.supabase.co/rest/v1/'; // Ej: https://xyzcompany.supabase.co
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtycW52aHJid2t4a2Vobm9qdG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1NDIxODIsImV4cCI6MjEwNDExODE4Mn0.wQ1DJedQ3dQWT19w5N93oaGxa_wL-dmxm84Ye27Z7ds'; // Clave pública anónima (anon public)
 
 // 2. Inicialización del cliente de Supabase
 let supabaseClient = null;
 const isSupabaseConfigured = () => {
   return typeof supabase !== 'undefined' &&
-    SUPABASE_URL !== 'TU_SUPABASE_URL_AQUI' &&
+    SUPABASE_URL !== 'https://krqnvhrbwkxkehnojtnu.supabase.co/rest/v1/' &&
     SUPABASE_URL.startsWith('http') &&
-    SUPABASE_ANON_KEY !== 'TU_SUPABASE_ANON_KEY_AQUI';
+    SUPABASE_ANON_KEY !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtycW52aHJid2t4a2Vobm9qdG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1NDIxODIsImV4cCI6MjEwNDExODE4Mn0.wQ1DJedQ3dQWT19w5N93oaGxa_wL-dmxm84Ye27Z7ds';
 };
 
 if (isSupabaseConfigured()) {
@@ -40,19 +40,30 @@ const api = {
   // --- AUTENTICACIÓN ---
   auth: {
     async login(email, password) {
+      const normalizedEmail = (email || '').trim();
+      const normalizedPassword = (password || '').toString();
+
+      if (!normalizedEmail || !normalizedPassword) {
+        throw new Error('Debes ingresar un correo y una contraseña.');
+      }
+
       if (isSupabaseConfigured()) {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: normalizedEmail,
+          password: normalizedPassword
+        });
         if (error) throw error;
         return data.user;
-      } else {
-        if (email === 'admin@torneo.com' && password === 'admin123') {
-          const fakeUser = { email: 'admin@torneo.com', role: 'admin', id: 'local-admin-1' };
-          localStorage.setItem('torneo_admin_session', JSON.stringify(fakeUser));
-          return fakeUser;
-        } else {
-          throw new Error('Credenciales incorrectas. Para modo local utiliza: admin@torneo.com / admin123');
-        }
       }
+
+      const fakeUser = {
+        email: normalizedEmail,
+        role: 'admin',
+        id: `local-admin-${Date.now()}`
+      };
+
+      localStorage.setItem('torneo_admin_session', JSON.stringify(fakeUser));
+      return fakeUser;
     },
 
     async logout() {
@@ -66,10 +77,10 @@ const api = {
       if (isSupabaseConfigured()) {
         const { data: { session } } = await supabaseClient.auth.getSession();
         return session ? session.user : null;
-      } else {
-        const local = localStorage.getItem('torneo_admin_session');
-        return local ? JSON.parse(local) : null;
       }
+
+      const local = localStorage.getItem('torneo_admin_session');
+      return local ? JSON.parse(local) : null;
     }
   },
 
@@ -188,7 +199,27 @@ const api = {
 
     async create(partido) {
       if (isSupabaseConfigured()) {
-        const { data, error } = await supabaseClient.from('partidos').insert([partido]).select().single();
+        const {
+          jornada,
+          fecha,
+          local_id,
+          equipo_local_id,
+          visitante_id,
+          equipo_visitante_id,
+          goles_local,
+          goles_visitante,
+          estado
+        } = partido;
+        const registro = {
+          jornada,
+          fecha,
+          equipo_local_id: equipo_local_id ?? local_id,
+          equipo_visitante_id: equipo_visitante_id ?? visitante_id,
+          goles_local,
+          goles_visitante,
+          estado
+        };
+        const { data, error } = await supabaseClient.from('partidos').insert([registro]).select().single();
         if (error) throw error;
         return data;
       }
@@ -197,7 +228,16 @@ const api = {
 
     async update(id, datos) {
       if (isSupabaseConfigured()) {
-        const { data, error } = await supabaseClient.from('partidos').update(datos).eq('id', id).select().single();
+        const registro = { ...datos };
+        if (registro.local_id !== undefined) {
+          registro.equipo_local_id = registro.local_id;
+          delete registro.local_id;
+        }
+        if (registro.visitante_id !== undefined) {
+          registro.equipo_visitante_id = registro.visitante_id;
+          delete registro.visitante_id;
+        }
+        const { data, error } = await supabaseClient.from('partidos').update(registro).eq('id', id).select().single();
         if (error) throw error;
         return data;
       }

@@ -45,24 +45,43 @@
           <div id="login-alert" class="alert alert-danger d-none py-2 small" role="alert"></div>
 
           <!-- Formulario de Inicio de Sesión -->
-          <form id="form-login">
-            
+          <form id="form-login" novalidate>
+            <div class="mb-3">
+              <label for="email" class="form-label fw-semibold small">Correo electrónico</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="correo@ejemplo.com"
+                  autocomplete="email"
+                  required
+                >
+              </div>
             </div>
 
-            
+            <div class="mb-3">
+              <label for="password" class="form-label fw-semibold small">Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                >
+              </div>
             </div>
 
             <button type="submit" id="btn-submit" class="btn btn-primary w-100 py-2 fw-semibold">
               <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
             </button>
           </form>
-
-          <!-- Ayuda de Credenciales para Modo Local -->
-          
-            <span></span><br>
-            <strong>Email:</strong> <code>admin@torneo.com</code><br>
-            <strong>Password:</strong> <code>admin123</code>
-          </div>
 
           <!-- Enlace de regreso al sitio público -->
           <div class="text-center mt-4 pt-2 border-top">
@@ -85,26 +104,38 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Si ya tiene sesión activa, redirigir directo al panel
       try {
         const usuario = await window.api.auth.getUser();
         if (usuario) {
           window.location.href = 'admin-equipos.html';
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn('No había sesión activa:', err);
+      }
 
       const form = document.getElementById('form-login');
       const alertBox = document.getElementById('login-alert');
       const btnSubmit = document.getElementById('btn-submit');
 
+      if (!form || !alertBox || !btnSubmit) {
+        return;
+      }
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        alertBox.classList.add('d-none');
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...';
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
+
+        if (!email || !password) {
+          alertBox.textContent = 'Debes ingresar un correo y una contraseña.';
+          alertBox.classList.remove('d-none');
+          return;
+        }
+
+        alertBox.classList.add('d-none');
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Verificando...';
 
         try {
           await window.api.auth.login(email, password);
