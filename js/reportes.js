@@ -96,7 +96,7 @@ async function exportarTablaPDF() {
     const encabezado = document.createElement('div');
     encabezado.innerHTML = `
       <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e3a8a; padding-bottom: 12px;">
-        <h2 style="color: #1e3a8a; margin: 0 0 5px 0; font-size: 22px; font-weight: bold;">⚽ LIGA ÉLITE DE FÚTBOL</h2>
+        <h2 style="color: #1e3a8a; margin: 0 0 5px 0; font-size: 22px; font-weight: bold;">⚽ LIGA DE FÚTBOL GARCÍA</h2>
         <h4 style="color: #475569; margin: 0 0 5px 0; font-size: 15px;">REPORTE OFICIAL - TABLA GENERAL DE POSICIONES</h4>
         <div style="color: #64748b; font-size: 11px;">Temporada 2026 • Generado el ${fechaHoy}</div>
       </div>
