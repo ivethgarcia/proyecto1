@@ -8,16 +8,16 @@
  */
 
 // 1. Configuración de credenciales de Supabase
-const SUPABASE_URL = 'https://krqnvhrbwkxkehnojtnu.supabase.co/rest/v1/'; // Ej: https://xyzcompany.supabase.co
+const SUPABASE_URL = 'https://krqnvhrbwkxkehnojtnu.supabase.co'; // Ej: https://xyzcompany.supabase.co
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtycW52aHJid2t4a2Vobm9qdG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1NDIxODIsImV4cCI6MjEwNDExODE4Mn0.wQ1DJedQ3dQWT19w5N93oaGxa_wL-dmxm84Ye27Z7ds'; // Clave pública anónima (anon public)
 
 // 2. Inicialización del cliente de Supabase
 let supabaseClient = null;
 const isSupabaseConfigured = () => {
   return typeof supabase !== 'undefined' &&
-    SUPABASE_URL !== 'https://krqnvhrbwkxkehnojtnu.supabase.co/rest/v1/' &&
+    SUPABASE_URL !== 'TU_SUPABASE_URL_AQUI' &&
     SUPABASE_URL.startsWith('http') &&
-    SUPABASE_ANON_KEY !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtycW52aHJid2t4a2Vobm9qdG51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1NDIxODIsImV4cCI6MjEwNDExODE4Mn0.wQ1DJedQ3dQWT19w5N93oaGxa_wL-dmxm84Ye27Z7ds';
+    SUPABASE_ANON_KEY !== 'TU_SUPABASE_ANON_KEY_AQUI';
 };
 
 if (isSupabaseConfigured()) {
