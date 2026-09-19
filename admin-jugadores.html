@@ -112,8 +112,11 @@
             </div>
 
             <div class="mb-3">
-              <label for="foto-jugador" class="form-label fw-semibold small">Avatar o URL de Foto (Opcional)</label>
+              <label class="form-label fw-semibold small">Foto del Jugador</label>
+              <input type="file" class="form-control mb-2" id="foto-archivo" accept="image/*">
+              <label for="foto-jugador" class="form-label small text-muted mb-1">Emoji o URL de la foto</label>
               <input type="text" class="form-control" id="foto-jugador" placeholder="Emoji ej. ⚽, ⭐ o enlace web">
+              <div class="form-text small">Puedes usar una imagen local, un emoji o una URL pública.</div>
             </div>
 
             <button type="submit" id="btn-crear-jugador" class="btn btn-primary w-100 py-2 fw-semibold">
@@ -208,8 +211,11 @@
             </div>
 
             <div class="mb-3">
-              <label for="edit-foto-jugador" class="form-label fw-semibold small">Avatar o Foto (URL/Emoji)</label>
+              <label class="form-label fw-semibold small">Foto del Jugador</label>
+              <input type="file" class="form-control mb-2" id="edit-foto-archivo" accept="image/*">
+              <label for="edit-foto-jugador" class="form-label small text-muted mb-1">Emoji o URL de la foto</label>
               <input type="text" class="form-control" id="edit-foto-jugador">
+              <div class="form-text small">Puedes usar una imagen local, un emoji o una URL pública.</div>
             </div>
           </div>
           <div class="modal-footer">

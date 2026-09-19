@@ -11,6 +11,47 @@ let modalEdicionJugador = null;
 let equiposCache = [];
 let jugadoresCache = [];
 
+function renderJugadorFotoHtml(fotoUrl) {
+  if (!fotoUrl) {
+    return '<span style="font-size: 1.25rem;">⚽</span>';
+  }
+
+  const valor = String(fotoUrl).trim();
+  if (valor.startsWith('http://') || valor.startsWith('https://') || valor.startsWith('data:')) {
+    return `<img src="${valor}" alt="foto jugador" style="width: 28px; height: 28px; object-fit: cover; border-radius: 50%;">`;
+  }
+
+  return `<span style="font-size: 1.25rem;">${valor}</span>`;
+}
+
+async function subirFotoJugador(file) {
+  if (!file) return '';
+
+  if (typeof supabase === 'undefined' || !supabaseClient || !supabaseClient.storage) {
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target.result);
+      reader.onerror = () => reject(new Error('No se pudo leer la imagen local.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  const extension = (file.name.split('.').pop() || 'png').toLowerCase();
+  const fileName = `jugadores/${Date.now()}-${Math.random().toString(36).slice(2)}.${extension}`;
+  const { error } = await supabaseClient.storage.from('jugadores').upload(fileName, file, {
+    cacheControl: '3600',
+    upsert: true,
+    contentType: file.type || 'image/png'
+  });
+
+  if (error) {
+    throw new Error(`No se pudo subir la imagen a Supabase Storage: ${error.message}`);
+  }
+
+  const { data } = supabaseClient.storage.from('jugadores').getPublicUrl(fileName);
+  return data?.publicUrl || '';
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const modalEl = document.getElementById('modalEditarJugador');
   if (modalEl && typeof bootstrap !== 'undefined') {
@@ -130,9 +171,7 @@ async function renderizarJugadores() {
 
     tbody.innerHTML = jugadoresCache.map(j => {
       const eq = getEquipo(j.equipo_id);
-      const fotoHtml = j.foto_url && j.foto_url.startsWith('http')
-        ? `<img src="${j.foto_url}" alt="${j.nombre}" style="width: 28px; height: 28px; object-fit: cover; border-radius: 50%;">`
-        : `<span style="font-size: 1.25rem;">${j.foto_url || '⚽'}</span>`;
+      const fotoHtml = renderJugadorFotoHtml(j.foto_url);
 
       return `
         <tr>
@@ -172,6 +211,8 @@ async function renderizarJugadores() {
 function configurarFormularioCrearJugador() {
   const form = document.getElementById('form-jugador');
   const btn = document.getElementById('btn-crear-jugador');
+  const fileInput = document.getElementById('foto-archivo');
+  const fotoInput = document.getElementById('foto-jugador');
   if (!form) return;
 
   form.addEventListener('submit', async (e) => {
@@ -181,7 +222,8 @@ function configurarFormularioCrearJugador() {
     const nombre = document.getElementById('nombre-jugador').value.trim();
     const numero = document.getElementById('numero-jugador').value;
     const posicion = document.getElementById('posicion-jugador').value;
-    const foto_url = document.getElementById('foto-jugador').value.trim();
+    const fotoTexto = (fotoInput ? fotoInput.value.trim() : '').trim();
+    const archivo = fileInput && fileInput.files ? fileInput.files[0] : null;
 
     if (!equipo_id || !nombre || !numero) {
       alert('Por favor completa los campos requeridos (Equipo, Nombre y Dorsal).');
@@ -194,16 +236,23 @@ function configurarFormularioCrearJugador() {
     }
 
     try {
+      let foto_url = fotoTexto;
+      if (archivo) {
+        foto_url = await subirFotoJugador(archivo);
+      }
+
       await window.api.jugadores.create({
         equipo_id: Number(equipo_id),
         nombre,
         numero: Number(numero),
         posicion,
-        foto_url
+        foto_url: foto_url || fotoTexto || '⚽'
       });
 
       form.reset();
-      // Restaurar selección de equipo si había filtro
+      if (fileInput) fileInput.value = '';
+      if (fotoInput) fotoInput.value = '';
+
       const selectFiltro = document.getElementById('filtro-equipo-jugador');
       if (selectFiltro && selectFiltro.value !== 'todos') {
         document.getElementById('equipo-jugador').value = selectFiltro.value;
@@ -236,6 +285,11 @@ window.abrirModalEditarJugador = function(id) {
   document.getElementById('edit-posicion-jugador').value = jugador.posicion;
   document.getElementById('edit-foto-jugador').value = jugador.foto_url || '';
 
+  const editFileInput = document.getElementById('edit-foto-archivo');
+  if (editFileInput) {
+    editFileInput.value = '';
+  }
+
   if (modalEdicionJugador) {
     modalEdicionJugador.show();
   }
@@ -247,6 +301,8 @@ window.abrirModalEditarJugador = function(id) {
 function configurarFormularioEditarJugador() {
   const formEdit = document.getElementById('form-editar-jugador');
   const btnEdit = document.getElementById('btn-guardar-edicion-jugador');
+  const fileInput = document.getElementById('edit-foto-archivo');
+  const fotoInput = document.getElementById('edit-foto-jugador');
   if (!formEdit) return;
 
   formEdit.addEventListener('submit', async (e) => {
@@ -257,7 +313,8 @@ function configurarFormularioEditarJugador() {
     const nombre = document.getElementById('edit-nombre-jugador').value.trim();
     const numero = document.getElementById('edit-numero-jugador').value;
     const posicion = document.getElementById('edit-posicion-jugador').value;
-    const foto_url = document.getElementById('edit-foto-jugador').value.trim();
+    const fotoTexto = (fotoInput ? fotoInput.value.trim() : '').trim();
+    const archivo = fileInput && fileInput.files ? fileInput.files[0] : null;
 
     if (!equipo_id || !nombre || !numero) {
       alert('Por favor completa los campos requeridos.');
@@ -270,12 +327,17 @@ function configurarFormularioEditarJugador() {
     }
 
     try {
+      let foto_url = fotoTexto;
+      if (archivo) {
+        foto_url = await subirFotoJugador(archivo);
+      }
+
       await window.api.jugadores.update(id, {
         equipo_id: Number(equipo_id),
         nombre,
         numero: Number(numero),
         posicion,
-        foto_url
+        foto_url: foto_url || fotoTexto || '⚽'
       });
 
       if (modalEdicionJugador) {
