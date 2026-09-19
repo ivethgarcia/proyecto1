@@ -41,6 +41,6 @@ proyecto 1/
 - [x] **Fase 2:** Repositorio en GitHub sincronizado y control de versiones activo.
 - [x] **Fase 3:** Plantilla visual de la Tabla de Posiciones con zonas de clasificación y descenso.
 - [x] **Fase 4:** Configuración de base de datos en Supabase (tablas `equipos` y `partidos`).
-- [ ] **Fase 5:** Módulo dinámico para administración de Equipos.
+- [x] **Fase 5:** Módulo dinámico para administración de Equipos.
 - [ ] **Fase 6:** Módulo dinámico para registro y marcadores de Partidos.
 - [ ] **Fase 7:** Cálculo automático y actualización en vivo de la Tabla de Posiciones.
