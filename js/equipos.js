@@ -95,16 +95,56 @@ async function renderizarEquipos() {
 function configurarFormularioCrear() {
   const form = document.getElementById('form-equipo');
   const btn = document.getElementById('btn-crear-equipo');
+  const logoInput = document.getElementById('logo-equipo');
+  const fileInput = document.getElementById('logo-file');
+  const preview = document.getElementById('logo-preview');
+
   if (!form) return;
+
+  const actualizarPreview = (value) => {
+    if (!preview) return;
+    preview.textContent = value && value.trim() ? value.trim() : '🛡️';
+  };
+
+  const seleccionarEmoji = (emoji) => {
+    if (logoInput) {
+      logoInput.value = emoji;
+    }
+    actualizarPreview(emoji);
+  };
+
+  document.querySelectorAll('#emoji-picker .emoji-option').forEach(button => {
+    button.addEventListener('click', () => seleccionarEmoji(button.dataset.emoji));
+  });
+
+  if (logoInput) {
+    logoInput.addEventListener('input', (e) => actualizarPreview(e.target.value));
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target.result;
+        if (logoInput) {
+          logoInput.value = result;
+        }
+        actualizarPreview(result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const nombreInput = document.getElementById('nombre-equipo');
-    const logoInput = document.getElementById('logo-equipo');
 
     const nombre = nombreInput.value.trim();
-    const logo = logoInput.value.trim();
+    const logo = (logoInput && logoInput.value.trim()) || '';
 
     if (!nombre) {
       alert('Por favor ingresa el nombre del equipo.');
@@ -117,8 +157,10 @@ function configurarFormularioCrear() {
     }
 
     try {
-      await window.api.equipos.create(nombre, logo);
+      await window.api.equipos.create(nombre, logo || '🛡️');
       form.reset();
+      if (fileInput) fileInput.value = '';
+      actualizarPreview('🛡️');
       await renderizarEquipos();
       nombreInput.focus();
     } catch (error) {
@@ -138,7 +180,15 @@ function configurarFormularioCrear() {
 window.abrirModalEditarEquipo = function(id, nombre, logo) {
   document.getElementById('edit-equipo-id').value = id;
   document.getElementById('edit-nombre-equipo').value = nombre;
-  document.getElementById('edit-logo-equipo').value = logo;
+  document.getElementById('edit-logo-equipo').value = logo || '';
+  const preview = document.getElementById('edit-logo-preview');
+  if (preview) {
+    preview.textContent = logo && logo.trim() ? logo.trim() : '🛡️';
+  }
+  const fileInput = document.getElementById('edit-logo-file');
+  if (fileInput) {
+    fileInput.value = '';
+  }
 
   if (modalEdicion) {
     modalEdicion.show();
@@ -151,14 +201,52 @@ window.abrirModalEditarEquipo = function(id, nombre, logo) {
 function configurarFormularioEditar() {
   const formEdit = document.getElementById('form-editar-equipo');
   const btnEdit = document.getElementById('btn-guardar-edicion-equipo');
+  const logoInput = document.getElementById('edit-logo-equipo');
+  const fileInput = document.getElementById('edit-logo-file');
+  const preview = document.getElementById('edit-logo-preview');
   if (!formEdit) return;
+
+  const actualizarPreview = (value) => {
+    if (!preview) return;
+    preview.textContent = value && value.trim() ? value.trim() : '🛡️';
+  };
+
+  document.querySelectorAll('#edit-emoji-picker .emoji-option').forEach(button => {
+    button.addEventListener('click', () => {
+      if (logoInput) {
+        logoInput.value = button.dataset.emoji;
+      }
+      actualizarPreview(button.dataset.emoji);
+    });
+  });
+
+  if (logoInput) {
+    logoInput.addEventListener('input', (e) => actualizarPreview(e.target.value));
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target.result;
+        if (logoInput) {
+          logoInput.value = result;
+        }
+        actualizarPreview(result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
   formEdit.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const id = document.getElementById('edit-equipo-id').value;
     const nombre = document.getElementById('edit-nombre-equipo').value.trim();
-    const logo = document.getElementById('edit-logo-equipo').value.trim();
+    const logo = (logoInput && logoInput.value.trim()) || '';
 
     if (!nombre) {
       alert('El nombre del equipo no puede estar vacío.');
@@ -171,7 +259,7 @@ function configurarFormularioEditar() {
     }
 
     try {
-      await window.api.equipos.update(id, { nombre, logo_url: logo });
+      await window.api.equipos.update(id, { nombre, logo_url: logo || '🛡️' });
       if (modalEdicion) {
         modalEdicion.hide();
       }

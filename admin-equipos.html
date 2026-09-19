@@ -95,11 +95,42 @@
               <label for="nombre-equipo" class="form-label fw-semibold small">Nombre del Equipo</label>
               <input type="text" class="form-control" id="nombre-equipo" placeholder="Ej. Real Madrid, Chelsea..." required>
             </div>
+
             <div class="mb-3">
-              <label for="logo-equipo" class="form-label fw-semibold small">Escudo (Emoji o URL de imagen)</label>
-              <input type="text" class="form-control" id="logo-equipo" placeholder="Ej. ⚪, 🦁 o https://.../escudo.png">
-              <div class="form-text small">Puedes escribir un emoji o pegar la URL de una imagen en internet.</div>
+              <label class="form-label fw-semibold small">Escudo del Equipo</label>
+
+              <div class="mb-2">
+                <input type="file" class="form-control" id="logo-file" accept="image/*">
+                <div class="form-text small">Sube una imagen local para usarla como escudo.</div>
+              </div>
+
+              <div class="mb-2">
+                <label for="logo-equipo" class="form-label small text-muted mb-1">Emoji o URL</label>
+                <input type="text" class="form-control" id="logo-equipo" placeholder="Ej. ⚪, 🦁 o https://.../escudo.png">
+              </div>
+
+              <div class="mb-2">
+                <div class="small text-muted mb-2">Selector rápido</div>
+                <div class="d-flex flex-wrap gap-2" id="emoji-picker">
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="⚽">⚽</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="👟">👟</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🏆">🏆</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🦁">🦁</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="⚡">⚡</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🛡️">🛡️</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🥇">🥇</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🔵">🔵</button>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                <div class="small text-muted mb-1">Vista previa</div>
+                <div class="border rounded p-2 bg-light d-flex align-items-center justify-content-center" style="min-height: 60px;">
+                  <span id="logo-preview" style="font-size: 2rem;">🛡️</span>
+                </div>
+              </div>
             </div>
+
             <button type="submit" id="btn-crear-equipo" class="btn btn-primary w-100 py-2 fw-semibold">
               <i class="bi bi-save me-1"></i> Guardar Equipo
             </button>
@@ -156,9 +187,40 @@
               <label for="edit-nombre-equipo" class="form-label fw-semibold small">Nombre del Equipo</label>
               <input type="text" class="form-control" id="edit-nombre-equipo" required>
             </div>
+
             <div class="mb-3">
-              <label for="edit-logo-equipo" class="form-label fw-semibold small">Escudo (Emoji o URL)</label>
-              <input type="text" class="form-control" id="edit-logo-equipo">
+              <label class="form-label fw-semibold small">Escudo del Equipo</label>
+
+              <div class="mb-2">
+                <input type="file" class="form-control" id="edit-logo-file" accept="image/*">
+                <div class="form-text small">Puedes reemplazarlo por una imagen local o usar un emoji.</div>
+              </div>
+
+              <div class="mb-2">
+                <label for="edit-logo-equipo" class="form-label small text-muted mb-1">Emoji o URL</label>
+                <input type="text" class="form-control" id="edit-logo-equipo" placeholder="Ej. ⚪, 🦁 o https://.../escudo.png">
+              </div>
+
+              <div class="mb-2">
+                <div class="small text-muted mb-2">Selector rápido</div>
+                <div class="d-flex flex-wrap gap-2" id="edit-emoji-picker">
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="⚽">⚽</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="👟">👟</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🏆">🏆</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🦁">🦁</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="⚡">⚡</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🛡️">🛡️</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🥇">🥇</button>
+                  <button type="button" class="btn btn-light btn-sm emoji-option" data-emoji="🔵">🔵</button>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                <div class="small text-muted mb-1">Vista previa</div>
+                <div class="border rounded p-2 bg-light d-flex align-items-center justify-content-center" style="min-height: 60px;">
+                  <span id="edit-logo-preview" style="font-size: 2rem;">🛡️</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
