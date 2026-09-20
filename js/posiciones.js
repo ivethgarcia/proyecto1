@@ -31,33 +31,43 @@ async function renderizarTablaPosiciones() {
   try {
     let posiciones = [];
 
-    if (typeof window !== 'undefined' && window.db && typeof window.db.from === 'function') {
-      const { data, error } = await window.db.from('posiciones').select('*').order('puntos', { ascending: false }).order('dg', { ascending: false }).order('gf', { ascending: false });
+    if (window.api && typeof window.api.posiciones?.calcular === 'function') {
+      posiciones = await window.api.posiciones.calcular();
+    } else if (typeof window !== 'undefined' && window.db && typeof window.db.from === 'function') {
+      const { data, error } = await window.db.from('equipos').select('id, nombre, logo_url');
       if (error) throw error;
-      posiciones = Array.isArray(data) ? data : [];
+      posiciones = Array.isArray(data) ? data.map((eq, index) => ({
+        id: eq.id,
+        nombre: eq.nombre,
+        logo_url: eq.logo_url || '🛡️',
+        pj: 0,
+        pg: 0,
+        pe: 0,
+        pp: 0,
+        gf: 0,
+        gc: 0,
+        dg: 0,
+        pts: 0,
+        racha: [],
+        orden: index + 1
+      })) : [];
     }
 
     if (!Array.isArray(posiciones) || posiciones.length === 0) {
-      const fallback = await window.api.posiciones.calcular();
-      posiciones = Array.isArray(fallback) ? fallback : [];
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="11" class="text-center py-4 text-muted">
+            <i class="bi bi-info-circle me-1"></i> No hay equipos registrados aún.
+          </td>
+        </tr>
+      `;
+      return;
     }
 
     const totalEquipos = posiciones.length;
     isLoading = false;
 
     await actualizarMetricas(posiciones);
-
-    if (totalEquipos === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="11" class="text-center py-4 text-muted">
-            <i class="bi bi-info-circle me-1"></i> No hay equipos registrados en el sistema.
-            El administrador debe registrar clubes en el panel de control.
-          </td>
-        </tr>
-      `;
-      return;
-    }
 
     tbody.innerHTML = posiciones.map((eq, index) => {
       const pos = index + 1;
