@@ -6,6 +6,8 @@
  * ===================================================
  */
 
+let isLoading = true;
+
 document.addEventListener('DOMContentLoaded', async () => {
   await renderizarTablaPosiciones();
 });
@@ -17,19 +19,39 @@ async function renderizarTablaPosiciones() {
   const tbody = document.getElementById('tabla-posiciones-body');
   if (!tbody) return;
 
-  try {
-    const posiciones = await window.api.posiciones.calcular();
-    const totalEquipos = posiciones.length;
+  isLoading = true;
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="11" class="text-center py-4 text-muted">
+        <i class="bi bi-arrow-repeat me-2"></i> Cargando posiciones...
+      </td>
+    </tr>
+  `;
 
-    // 1. Actualizar tarjetas de métricas en la parte superior
+  try {
+    let posiciones = [];
+
+    if (typeof window !== 'undefined' && window.db && typeof window.db.from === 'function') {
+      const { data, error } = await window.db.from('posiciones').select('*').order('puntos', { ascending: false }).order('dg', { ascending: false }).order('gf', { ascending: false });
+      if (error) throw error;
+      posiciones = Array.isArray(data) ? data : [];
+    }
+
+    if (!Array.isArray(posiciones) || posiciones.length === 0) {
+      const fallback = await window.api.posiciones.calcular();
+      posiciones = Array.isArray(fallback) ? fallback : [];
+    }
+
+    const totalEquipos = posiciones.length;
+    isLoading = false;
+
     await actualizarMetricas(posiciones);
 
-    // 2. Si no hay equipos registrados
     if (totalEquipos === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="10" class="text-center py-4 text-muted">
-            <i class="bi bi-info-circle me-1"></i> No hay equipos registrados en el sistema. 
+          <td colspan="11" class="text-center py-4 text-muted">
+            <i class="bi bi-info-circle me-1"></i> No hay equipos registrados en el sistema.
             El administrador debe registrar clubes en el panel de control.
           </td>
         </tr>
@@ -37,11 +59,19 @@ async function renderizarTablaPosiciones() {
       return;
     }
 
-    // 3. Renderizar cada fila según su posición en la tabla
     tbody.innerHTML = posiciones.map((eq, index) => {
       const pos = index + 1;
+      const nombre = eq.nombre || eq.equipo || 'Equipo';
+      const logo_url = eq.logo_url || eq.escudo || '🛡️';
+      const pj = Number(eq.pj ?? eq.partidos_jugados ?? 0);
+      const pg = Number(eq.pg ?? eq.partidos_ganados ?? 0);
+      const pe = Number(eq.pe ?? eq.partidos_empatados ?? 0);
+      const pp = Number(eq.pp ?? eq.partidos_perdidos ?? 0);
+      const gf = Number(eq.gf ?? eq.goles_favor ?? 0);
+      const gc = Number(eq.gc ?? eq.goles_contra ?? 0);
+      const dg = Number(eq.dg ?? eq.diferencia_goles ?? 0);
+      const pts = Number(eq.pts ?? eq.puntos ?? 0);
 
-      // Determinar estilo de zona
       let rowClass = 'row-neutral';
       let badgeClass = 'pos-regular';
       let badgeTitle = 'Permanencia';
@@ -60,24 +90,22 @@ async function renderizarTablaPosiciones() {
         badgeTitle = 'Zona de Descenso';
       }
 
-      // Formato de Diferencia de Goles
       let dgClass = 'dg-neutral';
-      let dgTexto = `${eq.dg}`;
-      if (eq.dg > 0) {
+      let dgTexto = `${dg}`;
+      if (dg > 0) {
         dgClass = 'dg-positive';
-        dgTexto = `+${eq.dg}`;
-      } else if (eq.dg < 0) {
+        dgTexto = `+${dg}`;
+      } else if (dg < 0) {
         dgClass = 'dg-negative';
       }
 
-      // Logo / Escudo del club
-      const logoHtml = eq.logo_url && eq.logo_url.startsWith('http')
-        ? `<img src="${eq.logo_url}" alt="${eq.nombre}" style="width: 22px; height: 22px; object-fit: contain;">`
-        : `<span>${eq.logo_url || '🛡️'}</span>`;
+      const logoHtml = logo_url && String(logo_url).startsWith('http')
+        ? `<img src="${logo_url}" alt="${nombre}" style="width: 22px; height: 22px; object-fit: contain;">`
+        : `<span>${logo_url || '🛡️'}</span>`;
 
-      // Generar badges de racha (últimos 5 partidos)
-      const rachaBadges = (eq.racha && eq.racha.length > 0)
-        ? eq.racha.map(r => {
+      const racha = Array.isArray(eq.racha) ? eq.racha : [];
+      const rachaBadges = racha.length > 0
+        ? racha.map(r => {
             const cls = r.resultado === 'V' ? 'forma-v' : (r.resultado === 'E' ? 'forma-e' : 'forma-d');
             return `<span class="forma-badge ${cls}" title="${r.detalle || r.resultado}">${r.resultado}</span>`;
           }).join('')
@@ -91,17 +119,17 @@ async function renderizarTablaPosiciones() {
           <td class="col-team">
             <div class="team-item">
               <div class="team-shield">${logoHtml}</div>
-              <span class="team-name">${eq.nombre}</span>
+              <span class="team-name">${nombre}</span>
             </div>
           </td>
-          <td>${eq.pj}</td>
-          <td>${eq.pg}</td>
-          <td>${eq.pe}</td>
-          <td>${eq.pp}</td>
-          <td>${eq.gf}</td>
-          <td>${eq.gc}</td>
+          <td>${pj}</td>
+          <td>${pg}</td>
+          <td>${pe}</td>
+          <td>${pp}</td>
+          <td>${gf}</td>
+          <td>${gc}</td>
           <td class="${dgClass}">${dgTexto}</td>
-          <td class="col-points">${eq.pts}</td>
+          <td class="col-points">${pts}</td>
           <td class="text-center">
             <div class="forma-container">${rachaBadges}</div>
           </td>
@@ -109,7 +137,15 @@ async function renderizarTablaPosiciones() {
       `;
     }).join('');
   } catch (err) {
+    isLoading = false;
     console.error('Error al renderizar tabla de posiciones:', err);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11" class="text-center py-4 text-danger">
+          <i class="bi bi-exclamation-triangle me-1"></i> No se pudieron cargar las posiciones.
+        </td>
+      </tr>
+    `;
   }
 }
 
