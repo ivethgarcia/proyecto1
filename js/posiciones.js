@@ -22,7 +22,7 @@ async function renderizarTablaPosiciones() {
   isLoading = true;
   tbody.innerHTML = `
     <tr>
-      <td colspan="11" class="text-center py-4 text-muted">
+      <td colspan="10" class="text-center py-4 text-muted">
         <i class="bi bi-arrow-repeat me-2"></i> Cargando posiciones...
       </td>
     </tr>
@@ -56,7 +56,7 @@ async function renderizarTablaPosiciones() {
     if (!Array.isArray(posiciones) || posiciones.length === 0) {
       tbody.innerHTML = `
         <tr>
-          <td colspan="11" class="text-center py-4 text-muted">
+          <td colspan="10" class="text-center py-4 text-muted">
             <i class="bi bi-info-circle me-1"></i> No hay equipos registrados aún.
           </td>
         </tr>
@@ -148,7 +148,7 @@ async function renderizarTablaPosiciones() {
     console.error('Error al renderizar tabla de posiciones:', err);
     tbody.innerHTML = `
       <tr>
-        <td colspan="11" class="text-center py-4 text-danger">
+        <td colspan="10" class="text-center py-4 text-danger">
           <i class="bi bi-exclamation-triangle me-1"></i> No se pudieron cargar las posiciones.
         </td>
       </tr>
