@@ -231,12 +231,13 @@ body {
 }
 
 .table-standings thead {
-  background: linear-gradient(180deg, #0b1120 0%, #111827 100%);
+  background-color: #0f172a !important;
   box-shadow: inset 0 -1px 0 rgba(245, 215, 110, 0.35);
 }
 
 .table-standings thead th {
-  color: #f5d774;
+  background-color: #0f172a !important;
+  color: #f5d774 !important;
   font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -251,7 +252,8 @@ body {
 .table-standings thead th.col-team {
   text-align: left;
   padding-left: 1.25rem;
-  color: #f5d774;
+  color: #f5d774 !important;
+  background-color: #0f172a !important;
 }
 
 .table-standings tbody tr {
