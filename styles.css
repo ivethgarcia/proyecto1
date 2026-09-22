@@ -231,24 +231,27 @@ body {
 }
 
 .table-standings thead {
-  background-color: #0f172a;
+  background: linear-gradient(180deg, #0b1120 0%, #111827 100%);
+  box-shadow: inset 0 -1px 0 rgba(245, 215, 110, 0.35);
 }
 
 .table-standings thead th {
-  color: #f8fafc;
+  color: #f5d774;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  padding: 0.95rem 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 1rem 0.7rem;
   text-align: center;
   border: none;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .table-standings thead th.col-team {
   text-align: left;
   padding-left: 1.25rem;
+  color: #f5d774;
 }
 
 .table-standings tbody tr {
