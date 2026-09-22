@@ -140,9 +140,6 @@ async function renderizarTablaPosiciones() {
           <td>${gc}</td>
           <td class="${dgClass}">${dgTexto}</td>
           <td class="col-points">${pts}</td>
-          <td class="text-center">
-            <div class="forma-container">${rachaBadges}</div>
-          </td>
         </tr>
       `;
     }).join('');
